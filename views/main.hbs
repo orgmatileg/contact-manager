@@ -1,0 +1,146 @@
+<div class="container">
+    <h2>Form Contact</h2>
+    <form>
+        <div class="form-group row">
+            <label for="name" class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="name" placeholder="Masukkan Name">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="email" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="email" placeholder="Masukkan Email">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2" id="btn-submit">Submit</button>
+        <button type="submit" class="btn btn-primary mb-2 d-none" id="btn-submit-edit" data-id="">Submit Edit</button>
+
+    </form>
+
+    <h2 class="text-center">Contact List (<span id="count">Fetching Count...</span>)</h2>
+
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each contacts}}
+                <tr>
+                    <th scope="row">{{ addOne @index }}</th>
+                    <td>{{name}}</td>
+                    <td>{{email}}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary"
+                            onclick="handleEdit('{{name}}','{{email}}','{{id}}')">Edit</button>
+                        <button type="button" class="btn btn-danger" onclick="handleDelete({{id}})">Delete</button>
+                    </td>
+                </tr>
+                {{../prefix}} {{firstname}}
+                {{/each}}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+
+
+
+    const handleDelete = async id => {
+
+        const res = await fetch(`http://localhost:3000/contacts/${id}`, {
+            method: "delete",
+        })
+
+        const resBody = await res.json()
+
+        alert("Sukses Delete Contact")
+
+        location.reload()
+
+    }
+
+    const getCountContacts = async id => {
+
+        const res = await fetch(`http://localhost:3000/contacts/count`, {
+            method: "get",
+        })
+
+        const resBody = await res.json()
+
+        return resBody.count
+
+    }
+
+    const handleEdit = (name, email, id) => {
+        document.getElementById("name").value = name
+        document.getElementById("email").value = email
+
+        document.getElementById("btn-submit").classList.add("d-none")
+        document.getElementById("btn-submit-edit").classList.remove("d-none")
+
+        document.getElementById("btn-submit-edit").setAttribute("data-id", id)
+
+    }
+
+    (async function () {
+
+        document.getElementById("btn-submit").addEventListener("click", async function (event) {
+            event.preventDefault()
+
+            const data = { name: document.getElementById("name").value, email: document.getElementById("email").value }
+
+            const res = await fetch(`http://localhost:3000/contacts`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+
+            const resBody = await res.json()
+
+            alert("Sukses Create Contact")
+
+            location.reload()
+        });
+
+        document.getElementById("btn-submit-edit").addEventListener("click", async function (event) {
+            event.preventDefault()
+
+            const id = document.getElementById("btn-submit-edit").getAttribute("data-id")
+
+            const data = { name: document.getElementById("name").value, email: document.getElementById("email").value }
+
+            const res = await fetch(`http://localhost:3000/contacts/${id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+
+            const resBody = await res.json()
+
+            alert("Sukses Edit Contact")
+
+            location.reload()
+        });
+
+
+
+        const countElement = document.getElementById("count")
+        countElement.innerHTML = await getCountContacts()
+        // your page initialization code here
+        // the DOM will be available here
+
+    })();
+
+</script>
