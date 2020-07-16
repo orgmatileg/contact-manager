@@ -5,9 +5,9 @@ const mysql = require('mysql');
 
 var pool = mysql.createPool({
     connectionLimit: 10,
-    host: 'luqmanul.com',
+    host: 'host',
     user: 'root',
-    password: 'masuk123',
+    password: 'password',
     database: 'contact_manager'
 });
 
