@@ -1,7 +1,7 @@
 test:
 	echo "testing command"
 db-stg-migration-up:
-	./tools/goose -dir dbMigration postgres "user=$$STG_POSTGRES_USERNAME password=$$STG_POSTGRES_PASSWORD dbname=$$STG_POSTGRES_DATABASE_NAME host=$$STG_POSTGRES_HOST port=$$STG_POSTGRES_PORT sslmode=disable" up-by-one
+	echo $$GITHUB_ACTION && ./tools/goose -dir dbMigration postgres "user=$$STG_POSTGRES_USERNAME password=$$STG_POSTGRES_PASSWORD dbname=$$STG_POSTGRES_DATABASE_NAME host=$$STG_POSTGRES_HOST port=$$STG_POSTGRES_PORT sslmode=disable" up-by-one
 
 db-stg-migration-down:
 	./tools/goose -dir dbMigration postgres "user=$$STG_POSTGRES_USERNAME password=$$STG_POSTGRES_PASSWORD dbname=$$STG_POSTGRES_DATABASE_NAME host=$$STG_POSTGRES_HOST port=$$STG_POSTGRES_PORT sslmode=disable" down
